@@ -489,20 +489,6 @@ static void MyCFSocketCallback(CFSocketRef, CFSocketCallBackType, CFDataRef, con
 	return [theRunLoopModes copy];
 }
 
-- (BOOL)isReusingPort
-{
-	int on = 0;
-	if(theSocket4 || theSocket6)
-		getsockopt(CFSocketGetNative(theSocket4 ?: theSocket6), SOL_SOCKET, SO_REUSEPORT, &on, NULL);
-	return on;
-}
-- (void)setReusingPort:(BOOL)reusePort
-{
-	int on = reusePort;
-	if(theSocket4) setsockopt(CFSocketGetNative(theSocket4), SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on));
-	if(theSocket6) setsockopt(CFSocketGetNative(theSocket6), SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on));
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Utilities:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -797,7 +783,7 @@ static void MyCFSocketCallback(CFSocketRef, CFSocketCallBackType, CFDataRef, con
 	int reuseOn = 1;
 	if (theSocket4)	setsockopt(CFSocketGetNative(theSocket4), SOL_SOCKET, SO_REUSEADDR, &reuseOn, sizeof(reuseOn));
 	if (theSocket6)	setsockopt(CFSocketGetNative(theSocket6), SOL_SOCKET, SO_REUSEADDR, &reuseOn, sizeof(reuseOn));
-
+	
 	// Bind the sockets
 	
 	if(address4)

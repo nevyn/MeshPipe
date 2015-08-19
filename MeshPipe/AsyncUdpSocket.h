@@ -16,8 +16,7 @@
 extern NSString *const AsyncUdpSocketException;
 extern NSString *const AsyncUdpSocketErrorDomain;
 
-enum AsyncUdpSocketError
-{
+typedef NS_ENUM(NSInteger, AsyncUdpSocketError) {
 	AsyncUdpSocketCFSocketError = kCFSocketError,	// From CFSocketError enum
 	AsyncUdpSocketNoError = 0,                      // Never used
 	AsyncUdpSocketBadParameter,                     // Used if given a bad parameter (such as an improper address)
@@ -26,7 +25,6 @@ enum AsyncUdpSocketError
 	AsyncUdpSocketSendTimeoutError,
 	AsyncUdpSocketReceiveTimeoutError
 };
-typedef enum AsyncUdpSocketError AsyncUdpSocketError;
 
 @interface AsyncUdpSocket : NSObject
 {
@@ -310,9 +308,6 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * The default set of run loop modes is NSDefaultRunLoopMode.
 **/
 - (NSArray *)runLoopModes;
-
-- (BOOL)isReusingPort;
-- (void)setReusingPort:(BOOL)reusePort;
 
 @end
 
