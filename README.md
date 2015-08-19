@@ -15,7 +15,9 @@ Since it is based on UDP, there are some hard-wired limitations:
 
 * Message must fit within a single UDP datagram. The current UDP datagram max
   size on iOS is 9216 bytes.
-* Delivery is not guaranteed. Messages may or may not get through.
+* Delivery is not guaranteed. Messages may or may not get through, may arrive from seemingly unavailable peers, or arrive out of order.
+* You may receive malicious or unexpected data, as any app on the phone could craft a message and send it to your app.
+* Communication is insecure, and any app on the device might listen in or even change messages.
 
 [IPC]: https://en.wikipedia.org/wiki/Inter-process_communication
 [UDP]: https://en.wikipedia.org/wiki/User_Datagram_Protocol
