@@ -23,6 +23,7 @@
 - (void)meshPipe:(MeshPipe*)pipe acceptedNewPeer:(MeshPipePeer*)peer
 {
 	NSLog(@"New peer, is now %@", pipe.peers);
+	[peer sendData:[@"Hello" dataUsingEncoding:NSUTF8StringEncoding]];
 }
 - (void)meshPipe:(MeshPipe *)pipe lostPeer:(MeshPipePeer*)peer withError:(NSError*)error
 {

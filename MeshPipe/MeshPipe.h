@@ -11,6 +11,20 @@
 @class MeshPipePeer;
 
 @interface MeshPipe : NSObject
+/*!
+	@arg port Starting port for your protocol. Must be same for all participants.
+	@arg count The maximum number of participating apps; this is how many sockets will be used.
+			   Must be same for all participants.
+	@arg peerName Name for this app/peer. I suggest using "\(appBundleName).\(nameOfLibrary)".
+	
+	Each app will try to connect to `count` other apps, so don't make this number too
+	large as it will create a very large number of UDP sockets.
+
+	Try somehow to choose a port and range that does not overlap with other apps'
+	usage of UDP or MeshPipe. Perhaps we can coordinate usage on the Github wiki for this
+	project?
+
+*/
 - (instancetype)initWithBasePort:(int)basePort count:(int)count peerName:(NSString*)peerName delegate:(id<MeshPipeDelegate>)delegate;
 - (void)disconnect;
 
@@ -19,6 +33,7 @@
 @property(nonatomic,readonly) NSString *peerName;
 @property(nonatomic,readonly) id<MeshPipeDelegate> delegate;
 
+/// Connected peers (other running apps)
 @property(nonatomic) NSSet<MeshPipePeer*> *peers;
 @end
 

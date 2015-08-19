@@ -34,6 +34,7 @@
 		05B10CA91B83B54700249C11 /* MeshPipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeshPipe.m; sourceTree = "<group>"; };
 		05B10CAB1B84909000249C11 /* GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GZIP.h; sourceTree = "<group>"; };
 		05B10CAC1B84909000249C11 /* GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GZIP.m; sourceTree = "<group>"; };
+		05B10CAE1B84992900249C11 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +74,7 @@
 				05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */,
 				05B10CAB1B84909000249C11 /* GZIP.h */,
 				05B10CAC1B84909000249C11 /* GZIP.m */,
+				05B10CAE1B84992900249C11 /* README.md */,
 			);
 			path = MeshPipe;
 			sourceTree = "<group>";
