@@ -182,8 +182,12 @@ static NSDictionary *DeserializeInternal(NSData *data);
 			return NO;
 	} else if(type == _MeshPipeMessageTypeData) {
 		MPDebug(@"Reveived from peer %@ message %@", peer, payload);
-		if([self.delegate respondsToSelector:@selector(meshPipe:receivedData:fromPeer:)])
+		if([self.delegate respondsToSelector:@selector(meshPipe:receivedData:fromPeer:)]) {
 			[self.delegate meshPipe:self receivedData:payload fromPeer:peer];
+		}
+		if([peer.delegate respondsToSelector:@selector(meshPipePeer:receivedData:)]) {
+			[peer.delegate meshPipePeer:peer receivedData:payload];
+		}
 	} else {
 		MPDebug(@"Received unexpected message type from %@", peer);
 		return NO;

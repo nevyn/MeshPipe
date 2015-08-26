@@ -62,4 +62,10 @@ when peers connect/disappear:
 Note that on disconnection, the errors are in the `MeshPipeErrorDomain` domain
 and are listed at the bottom of MeshPipe.h.
 
+Usage with Cerfing
+==================
+
+If you want to shuffle more fun kinds of data around a MeshPipe network, you can
+use Cerfing, and the attached CerfingMeshPipeTransport.See the Transport target's
+main.m for a demo.
 

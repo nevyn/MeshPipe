@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-@protocol MeshPipeDelegate;
+@protocol MeshPipeDelegate, MeshPipePeerDelegate;
 @class MeshPipePeer;
 
 @interface MeshPipe : NSObject
@@ -39,6 +39,7 @@
 
 @interface MeshPipePeer : NSObject
 @property(nonatomic,readonly) NSString *name;
+@property(nonatomic,weak,readwrite) id<MeshPipePeerDelegate> delegate;
 - (void)sendData:(NSData*)data;
 @end
 
@@ -47,6 +48,10 @@
 - (void)meshPipe:(MeshPipe*)pipe acceptedNewPeer:(MeshPipePeer*)peer;
 - (void)meshPipe:(MeshPipe *)pipe lostPeer:(MeshPipePeer*)peer withError:(NSError*)error;
 - (void)meshPipe:(MeshPipe*)pipe receivedData:(NSData*)data fromPeer:(MeshPipePeer*)peer;
+@end
+
+@protocol MeshPipePeerDelegate <NSObject>
+- (void)meshPipePeer:(MeshPipePeer*)peer receivedData:(NSData*)data;
 @end
 
 extern NSString *const MeshPipeErrorDomain;

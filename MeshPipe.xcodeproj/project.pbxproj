@@ -11,10 +11,25 @@
 		05B10CA71B83B53100249C11 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */; };
 		05B10CAA1B83B54700249C11 /* MeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA91B83B54700249C11 /* MeshPipe.m */; };
 		05B10CAD1B84909000249C11 /* GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CAC1B84909000249C11 /* GZIP.m */; };
+		05B92C8C1B8E332700226846 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C8B1B8E332700226846 /* main.m */; };
+		05B92C921B8E338A00226846 /* CerfingMeshPipeTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C911B8E338A00226846 /* CerfingMeshPipeTransport.m */; };
+		05B92CA51B8E33DF00226846 /* CerfingConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C951B8E33DF00226846 /* CerfingConnection.m */; };
+		05B92CA61B8E33DF00226846 /* CerfingSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C971B8E33DF00226846 /* CerfingSerializer.m */; };
+		05B92CAB1B8E33DF00226846 /* CerfingTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92CA41B8E33DF00226846 /* CerfingTransport.m */; };
+		05B92CAE1B8E393400226846 /* CerfingMeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92CAD1B8E393400226846 /* CerfingMeshPipe.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		05B10C991B83B51C00249C11 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		05B92C871B8E332700226846 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -35,10 +50,29 @@
 		05B10CAB1B84909000249C11 /* GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GZIP.h; sourceTree = "<group>"; };
 		05B10CAC1B84909000249C11 /* GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GZIP.m; sourceTree = "<group>"; };
 		05B10CAE1B84992900249C11 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		05B92C891B8E332700226846 /* CerfingMeshPipeTransport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CerfingMeshPipeTransport; sourceTree = BUILT_PRODUCTS_DIR; };
+		05B92C8B1B8E332700226846 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		05B92C901B8E338A00226846 /* CerfingMeshPipeTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CerfingMeshPipeTransport.h; sourceTree = "<group>"; };
+		05B92C911B8E338A00226846 /* CerfingMeshPipeTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingMeshPipeTransport.m; sourceTree = "<group>"; };
+		05B92C941B8E33DF00226846 /* CerfingConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CerfingConnection.h; sourceTree = "<group>"; };
+		05B92C951B8E33DF00226846 /* CerfingConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingConnection.m; sourceTree = "<group>"; };
+		05B92C961B8E33DF00226846 /* CerfingSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CerfingSerializer.h; sourceTree = "<group>"; };
+		05B92C971B8E33DF00226846 /* CerfingSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingSerializer.m; sourceTree = "<group>"; };
+		05B92CA31B8E33DF00226846 /* CerfingTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CerfingTransport.h; sourceTree = "<group>"; };
+		05B92CA41B8E33DF00226846 /* CerfingTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingTransport.m; sourceTree = "<group>"; };
+		05B92CAC1B8E393400226846 /* CerfingMeshPipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CerfingMeshPipe.h; sourceTree = "<group>"; };
+		05B92CAD1B8E393400226846 /* CerfingMeshPipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingMeshPipe.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		05B10C981B83B51C00249C11 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		05B92C861B8E332700226846 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -52,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				05B10C9D1B83B51C00249C11 /* MeshPipe */,
+				05B92C8A1B8E332700226846 /* CerfingMeshPipeTransport */,
 				05B10C9C1B83B51C00249C11 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				05B10C9B1B83B51C00249C11 /* MeshPipe */,
+				05B92C891B8E332700226846 /* CerfingMeshPipeTransport */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -77,6 +113,41 @@
 				05B10CAE1B84992900249C11 /* README.md */,
 			);
 			path = MeshPipe;
+			sourceTree = "<group>";
+		};
+		05B92C8A1B8E332700226846 /* CerfingMeshPipeTransport */ = {
+			isa = PBXGroup;
+			children = (
+				05B92C8B1B8E332700226846 /* main.m */,
+				05B92CAC1B8E393400226846 /* CerfingMeshPipe.h */,
+				05B92CAD1B8E393400226846 /* CerfingMeshPipe.m */,
+				05B92C901B8E338A00226846 /* CerfingMeshPipeTransport.h */,
+				05B92C911B8E338A00226846 /* CerfingMeshPipeTransport.m */,
+				05B92C931B8E33DF00226846 /* Cerfing */,
+			);
+			path = CerfingMeshPipeTransport;
+			sourceTree = "<group>";
+		};
+		05B92C931B8E33DF00226846 /* Cerfing */ = {
+			isa = PBXGroup;
+			children = (
+				05B92C941B8E33DF00226846 /* CerfingConnection.h */,
+				05B92C951B8E33DF00226846 /* CerfingConnection.m */,
+				05B92C961B8E33DF00226846 /* CerfingSerializer.h */,
+				05B92C971B8E33DF00226846 /* CerfingSerializer.m */,
+				05B92C9D1B8E33DF00226846 /* Transports */,
+			);
+			name = Cerfing;
+			path = ../../Cerfing/Cerfing;
+			sourceTree = "<group>";
+		};
+		05B92C9D1B8E33DF00226846 /* Transports */ = {
+			isa = PBXGroup;
+			children = (
+				05B92CA31B8E33DF00226846 /* CerfingTransport.h */,
+				05B92CA41B8E33DF00226846 /* CerfingTransport.m */,
+			);
+			path = Transports;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,6 +170,23 @@
 			productReference = 05B10C9B1B83B51C00249C11 /* MeshPipe */;
 			productType = "com.apple.product-type.tool";
 		};
+		05B92C881B8E332700226846 /* CerfingMeshPipeTransport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 05B92C8F1B8E332700226846 /* Build configuration list for PBXNativeTarget "CerfingMeshPipeTransport" */;
+			buildPhases = (
+				05B92C851B8E332700226846 /* Sources */,
+				05B92C861B8E332700226846 /* Frameworks */,
+				05B92C871B8E332700226846 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CerfingMeshPipeTransport;
+			productName = CerfingMeshPipeTransport;
+			productReference = 05B92C891B8E332700226846 /* CerfingMeshPipeTransport */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -109,6 +197,9 @@
 				ORGANIZATIONNAME = ThirdCog;
 				TargetAttributes = {
 					05B10C9A1B83B51C00249C11 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					05B92C881B8E332700226846 = {
 						CreatedOnToolsVersion = 7.0;
 					};
 				};
@@ -126,6 +217,7 @@
 			projectRoot = "";
 			targets = (
 				05B10C9A1B83B51C00249C11 /* MeshPipe */,
+				05B92C881B8E332700226846 /* CerfingMeshPipeTransport */,
 			);
 		};
 /* End PBXProject section */
@@ -139,6 +231,19 @@
 				05B10CAA1B83B54700249C11 /* MeshPipe.m in Sources */,
 				05B10CA71B83B53100249C11 /* AsyncUdpSocket.m in Sources */,
 				05B10CAD1B84909000249C11 /* GZIP.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		05B92C851B8E332700226846 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05B92CAB1B8E33DF00226846 /* CerfingTransport.m in Sources */,
+				05B92CAE1B8E393400226846 /* CerfingMeshPipe.m in Sources */,
+				05B92C8C1B8E332700226846 /* main.m in Sources */,
+				05B92CA51B8E33DF00226846 /* CerfingConnection.m in Sources */,
+				05B92CA61B8E33DF00226846 /* CerfingSerializer.m in Sources */,
+				05B92C921B8E338A00226846 /* CerfingMeshPipeTransport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +341,28 @@
 			};
 			name = Release;
 		};
+		05B92C8D1B8E332700226846 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					../Cerfing,
+					.,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		05B92C8E1B8E332700226846 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					../Cerfing,
+					.,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -253,6 +380,15 @@
 			buildConfigurations = (
 				05B10CA31B83B51C00249C11 /* Debug */,
 				05B10CA41B83B51C00249C11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		05B92C8F1B8E332700226846 /* Build configuration list for PBXNativeTarget "CerfingMeshPipeTransport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05B92C8D1B8E332700226846 /* Debug */,
+				05B92C8E1B8E332700226846 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
