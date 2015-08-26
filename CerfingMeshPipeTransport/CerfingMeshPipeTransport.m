@@ -35,9 +35,38 @@
 
 - (void)_exhaustReadRequests
 {
-	if([_queuedPayloads count] == 0)
+	CMPTReadRequest *req = [_readRequests firstObject];
+	if(!req)
 		return;
 	
+	NSMutableData *payload = [_queuedPayloads firstObject];
+	if(!payload)
+		return;
+	
+	// We can't split a Cerfing message across multiple payloads,
+	// as the payloads themselves are UDP datagrams and may be delivered out-of-order.
+	NSAssert(req.length <= payload.length, @"Read request/payload length mismatch. Each payload must contain exactly the same amount of data as one full Cerfing message.");
+	
+	// Request will now be handled.
+	[_readRequests removeObject:req];
+	
+	NSRange requestedRange = NSMakeRange(0, req.length);
+	NSData *requestedData = [payload subdataWithRange:requestedRange];
+	if(payload.length == req.length) {
+		[_queuedPayloads removeObjectAtIndex:0];
+	} else {
+		[payload replaceBytesInRange:requestedRange withBytes:NULL length:0];
+	}
+	
+	[self.delegate transport:self didReadData:requestedData withTag:req.tag];
+	
+	// Keep handling read requests until _readRequests or _queuedPayloads is empty
+	[self _exhaustReadRequests];
+}
+
+- (NSString*)description
+{
+	return [NSString stringWithFormat:@"<%@@%p over %@>", [self class], self, _peer];
 }
 
 #pragma mark Transport concrete implementations

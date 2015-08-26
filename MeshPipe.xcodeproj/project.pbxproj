@@ -17,6 +17,9 @@
 		05B92CA61B8E33DF00226846 /* CerfingSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C971B8E33DF00226846 /* CerfingSerializer.m */; };
 		05B92CAB1B8E33DF00226846 /* CerfingTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92CA41B8E33DF00226846 /* CerfingTransport.m */; };
 		05B92CAE1B8E393400226846 /* CerfingMeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92CAD1B8E393400226846 /* CerfingMeshPipe.m */; };
+		05B92CAF1B8E561600226846 /* MeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA91B83B54700249C11 /* MeshPipe.m */; };
+		05B92CB01B8E561600226846 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */; };
+		05B92CB11B8E561600226846 /* GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CAC1B84909000249C11 /* GZIP.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -239,8 +242,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				05B92CAB1B8E33DF00226846 /* CerfingTransport.m in Sources */,
+				05B92CB11B8E561600226846 /* GZIP.m in Sources */,
 				05B92CAE1B8E393400226846 /* CerfingMeshPipe.m in Sources */,
 				05B92C8C1B8E332700226846 /* main.m in Sources */,
+				05B92CB01B8E561600226846 /* AsyncUdpSocket.m in Sources */,
+				05B92CAF1B8E561600226846 /* MeshPipe.m in Sources */,
 				05B92CA51B8E33DF00226846 /* CerfingConnection.m in Sources */,
 				05B92CA61B8E33DF00226846 /* CerfingSerializer.m in Sources */,
 				05B92C921B8E338A00226846 /* CerfingMeshPipeTransport.m in Sources */,

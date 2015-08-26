@@ -5,7 +5,7 @@
 @interface CerfingMeshPipe () <MeshPipeDelegate>
 {
 	MeshPipe *_pipe;
-	NSMutableSet<CerfingConnection*> *_cerfingPeerConnections;
+	NSMutableSet<CerfingConnection*> *_peerConnections;
 }
 @end
 
@@ -14,7 +14,7 @@
 {
 	if(!(self = [super init]))
 		return nil;
-	_cerfingPeerConnections = [NSMutableSet new];
+	_peerConnections = [NSMutableSet new];
 	_pipe = [[MeshPipe alloc] initWithBasePort:basePort count:count peerName:peerName delegate:self];
 	
 	return self;
@@ -22,7 +22,7 @@
 
 - (CerfingConnection*)connectionForPeer:(MeshPipePeer*)peer
 {
-	for(CerfingConnection *connection in _cerfingPeerConnections) {
+	for(CerfingConnection *connection in _peerConnections) {
 		CerfingMeshPipeTransport *transport = (id)connection.transport;
 		if(transport.peer == peer)
 			return connection;
@@ -34,12 +34,17 @@
 {
 	CerfingMeshPipeTransport *transport = [[CerfingMeshPipeTransport alloc] initWithPeer:peer];
 	CerfingConnection *cerfingPeerConnection = [[CerfingConnection alloc] initWithTransport:transport delegate:self.delegate];
-	[_cerfingPeerConnections addObject:cerfingPeerConnection];
+	cerfingPeerConnection.automaticallyDispatchCommands = YES;
+	[_peerConnections addObject:cerfingPeerConnection];
+	[transport.delegate transportDidConnect:transport];
 }
 
 - (void)meshPipe:(MeshPipe *)pipe lostPeer:(MeshPipePeer*)peer withError:(NSError*)error;
 {
+	CerfingMeshPipeTransport *transport = [[CerfingMeshPipeTransport alloc] initWithPeer:peer];
 	CerfingConnection *conn = [self connectionForPeer:peer];
-	[_cerfingPeerConnections removeObject:conn];
+	[transport.delegate transport:transport willDisconnectWithError:error];
+	[_peerConnections removeObject:conn];
+	[transport.delegate transportDidDisconnect:transport];
 }
 @end
