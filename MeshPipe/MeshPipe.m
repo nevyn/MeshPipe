@@ -306,14 +306,14 @@ static NSData *SerializeInternal(NSDictionary *internal)
 		NSCAssert(d != nil, @"Couldn't serialize: %@", err);
 		return nil;
 	}
-	return [d gzippedData];
+	return d; // [d gzippedData]; gzipped data is bigger!
 }
 
 static NSDictionary *DeserializeInternal(NSData *data)
 {
-	NSData *unzipped = [data gunzippedData];
+	//NSData *unzipped = [data gunzippedData];
 	NSError *err;
-	id ret = [NSJSONSerialization JSONObjectWithData:unzipped options:0 error:&err];
+	id ret = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
 	if(!ret) {
 		MPDebug(@"Unable to deserialize: %@ %@", data, err);
 		return nil;
