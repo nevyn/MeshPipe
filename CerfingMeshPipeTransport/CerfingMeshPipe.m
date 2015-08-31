@@ -42,6 +42,8 @@
 	CerfingMeshPipeTransport *transport = [[CerfingMeshPipeTransport alloc] initWithPeer:peer];
 	CerfingConnection *cerfingPeerConnection = [[CerfingConnection alloc] initWithTransport:transport delegate:self.delegate];
 	cerfingPeerConnection.automaticallyDispatchCommands = YES;
+	if(self.connectionConfigurator)
+		self.connectionConfigurator(cerfingPeerConnection);
 	[_peerConnections addObject:cerfingPeerConnection];
 	[transport.delegate transportDidConnect:transport];
 }
