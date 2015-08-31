@@ -9,4 +9,5 @@
 @property(nonatomic,weak) id<CerfingConnectionDelegate> delegate;
 
 @property(nonatomic,copy,readonly) NSSet<CerfingConnection*> *peerConnections;
+- (void)broadcastDict:(NSDictionary*)dict;
 @end

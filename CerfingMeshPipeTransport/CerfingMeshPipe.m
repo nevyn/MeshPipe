@@ -20,6 +20,13 @@
 	return self;
 }
 
+- (void)broadcastDict:(NSDictionary*)dict
+{
+	for(CerfingConnection *connection in _peerConnections) {
+		[connection sendDict:dict];
+	}
+}
+
 - (CerfingConnection*)connectionForPeer:(MeshPipePeer*)peer
 {
 	for(CerfingConnection *connection in _peerConnections) {
