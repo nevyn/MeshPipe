@@ -107,6 +107,11 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	return self;
 }
 
+- (void)dealloc
+{
+
+}
+
 - (void)disconnect
 {
 	MPDebug(@"Disconnecting from %@", _peers);

@@ -20,6 +20,11 @@
 	return self;
 }
 
+- (void)dealloc
+{
+	[_pipe disconnect];
+}
+
 - (void)broadcastDict:(NSDictionary*)dict
 {
 	for(CerfingConnection *connection in _peerConnections) {

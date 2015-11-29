@@ -31,7 +31,7 @@
 @property(nonatomic,readonly) int basePort;
 @property(nonatomic,readonly) int count;
 @property(nonatomic,readonly) NSString *peerName;
-@property(nonatomic,readonly) id<MeshPipeDelegate> delegate;
+@property(nonatomic,readonly, weak) id<MeshPipeDelegate> delegate;
 
 /// Connected peers (other running apps)
 @property(nonatomic) NSSet<MeshPipePeer*> *peers;
