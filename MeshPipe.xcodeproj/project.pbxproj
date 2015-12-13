@@ -128,7 +128,8 @@
 				05B92C911B8E338A00226846 /* CerfingMeshPipeTransport.m */,
 				05B92C931B8E33DF00226846 /* Cerfing */,
 			);
-			path = CerfingMeshPipeTransport;
+			name = CerfingMeshPipeTransport;
+			path = MeshPipe/CerfingMeshPipeTransport;
 			sourceTree = "<group>";
 		};
 		05B92C931B8E33DF00226846 /* Cerfing */ = {
@@ -141,7 +142,7 @@
 				05B92C9D1B8E33DF00226846 /* Transports */,
 			);
 			name = Cerfing;
-			path = ../../Cerfing/Cerfing;
+			path = ../../../Cerfing/Cerfing;
 			sourceTree = "<group>";
 		};
 		05B92C9D1B8E33DF00226846 /* Transports */ = {
@@ -397,6 +398,7 @@
 				05B92C8E1B8E332700226846 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -37,14 +37,17 @@ Pod::Spec.new do |s|
     core.source_files  = "MeshPipe/*.{h,m}"
     core.exclude_files = "MeshPipe/main.m"
     core.public_header_files = "MeshPipe/MeshPipe.h"
+    core.header_mappings_dir = 'Cerfing'
     # core.dependency "AsyncSocket"
   end
   
   s.subspec "CerfingMeshPipe" do |cerf|
-    cerf.source_files  = "CerfingMeshPipeTransport/*.{h,m}"
-    cerf.exclude_files = "CerfingMeshPipeTransport/main.m"
+    cerf.source_files        = "MeshPipe/CerfingMeshPipeTransport/*.{h,m}"
+    cerf.public_header_files = "MeshPipe/CerfingMeshPipeTransport/*.h"
+    cerf.exclude_files       = "MeshPipe/CerfingMeshPipeTransport/main.m"
     cerf.dependency "Cerfing"
     cerf.dependency "MeshPipe/Core"
+    cerf.header_mappings_dir = 'Cerfing'
   end
   
   s.default_subspecs = "Core"
