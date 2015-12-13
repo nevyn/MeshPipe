@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "MeshPipe"
-  s.version      = "0.1.0"
+  s.version      = "0.1.1"
   s.summary      = "IPC library for iOS"
 
   s.description  = <<-DESC
