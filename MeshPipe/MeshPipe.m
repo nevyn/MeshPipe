@@ -7,25 +7,30 @@
 //
 
 #import "MeshPipe.h"
-#import "AsyncUdpSocket.h"
+#import "GCDAsyncUdpSocket.h"
 #import "GZIP.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+static NSString *MeshPipeLocalAddress = @"127.0.0.1";
 
-//#define MPDebug(...) NSLog(__VA_ARGS__)
 #define MPDebug(...)
+#ifdef DEBUG
+    #define MPDebug(...) NSLog(__VA_ARGS__)
+#endif
 
 typedef NS_ENUM(uint8_t, _MeshPipeMessageType) {
 	_MeshPipeMessageTypeInternal = 1,
 	_MeshPipeMessageTypeData = 2,
 };
 
-@interface MeshPipe () <AsyncUdpSocketDelegate>
+@interface MeshPipe () <GCDAsyncUdpSocketDelegate>
 {
 	NSMutableSet<MeshPipePeer*> *_peers;
 	NSMutableArray<MeshPipePeer*> *_potentialPeers;
 	int _myPort;
 	NSTimer *_keepaliveTimer;
 }
-@property(nonatomic,readonly) AsyncUdpSocket *listenSocket;
+@property(nonatomic,readonly) GCDAsyncUdpSocket *listenSocket;
 @end
 
 @interface MeshPipePeer ()
@@ -33,7 +38,7 @@ typedef NS_ENUM(uint8_t, _MeshPipeMessageType) {
 }
 @property(nonatomic) int port;
 @property(nonatomic,readwrite) NSString *name;
-@property(nonatomic) AsyncUdpSocket *socket;
+@property(nonatomic) GCDAsyncUdpSocket *socket;
 @property(nonatomic) NSTimer *expectKeepaliveTimer;
 @property(nonatomic,weak) MeshPipe *parent;
 - (void)sendInternal:(NSDictionary*)internal;
@@ -51,6 +56,17 @@ static NSDictionary *DeserializeInternal(NSData *data);
 ///// ------ IMPL --------
 
 @implementation MeshPipe
++ (NSData *)_addressFor:(NSString *)host port:(UInt16)port
+{
+    struct sockaddr_in ip;
+    ip.sin_family = AF_INET;
+    ip.sin_port = htons(port);
+    inet_pton(AF_INET, [host cStringUsingEncoding:NSUTF8StringEncoding], &ip.sin_addr);
+    
+    NSData *discoveryHost = [NSData dataWithBytes:&ip length:sizeof(ip)];
+    return discoveryHost;
+}
+
 - (instancetype)initWithBasePort:(int)basePort count:(int)count peerName:(NSString*)peerName delegate:(id<MeshPipeDelegate>)delegate
 {
 	if(!(self = [super init]))
@@ -64,36 +80,39 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	_potentialPeers = [NSMutableArray new];
 	_peers = [NSMutableSet new];
 	
-	_listenSocket = [[AsyncUdpSocket alloc] initWithDelegate:self];
-
+	_listenSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
+                                                  delegateQueue:dispatch_get_main_queue()];
 	for(int i = 0; i < count; i++) {
 		int port = _basePort + i;
-		BOOL success = [_listenSocket bindToAddress:@"localhost" port:port error:NULL];
+        NSData *address = [MeshPipe _addressFor:MeshPipeLocalAddress port:port];
+		BOOL success = [_listenSocket bindToAddress:address error:NULL];
 		if(success) {
 			_myPort = port;
 			break;
 		}
 	}
 	if(!_myPort) {
-		NSLog(@"No free MeshPipe slots, not creating pipe");
+		MPDebug(@"No free MeshPipe slots, not creating pipe");
 		return nil;
 	}
 	
 	MPDebug(@"MeshPipe listening on %d", _myPort);
 	
-	[_listenSocket receiveWithTimeout:-1 tag:0];
-	
+    [_listenSocket beginReceiving:NULL];
+    
 	for(int i = 0; i < count; i++) {
 		int port = _basePort + i;
 		MeshPipePeer *potentialPeer = (port == _myPort) ? [MeshPipeSelfPeer new] : [MeshPipePeer new];
 		potentialPeer.parent = self;
-		potentialPeer.socket = [[AsyncUdpSocket alloc] initWithDelegate:self];
+		potentialPeer.socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
+                                                             delegateQueue:dispatch_get_main_queue()];
 		potentialPeer.port = port;
 		[_potentialPeers addObject:potentialPeer];
 		
 		NSError *err;
-		if(![potentialPeer.socket connectToHost:@"localhost" onPort:potentialPeer.port error:&err]) {
-			NSLog(@"Unexectedly couldn't connect to MeshPipe potential peer %d, giving up: %@", i, err);
+        NSData *address = [MeshPipe _addressFor:MeshPipeLocalAddress port:potentialPeer.port];
+		if(![potentialPeer.socket connectToAddress:address error:&err]) {
+			MPDebug(@"Unexectedly couldn't connect to MeshPipe potential peer %d, giving up: %@", i, err);
 			return nil;
 		}
 		[self announceTo:potentialPeer];
@@ -156,20 +175,22 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	}];
 }
 
-- (BOOL)onUdpSocket:(AsyncUdpSocket *)sock
-     didReceiveData:(NSData *)data
-            withTag:(long)tag
-           fromHost:(NSString *)host
-               port:(UInt16)port
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock
+   didReceiveData:(NSData *)data
+      fromAddress:(NSData *)address
+withFilterContext:(id)filterContext
 {
-	if(![host isEqual:@"localhost"] && ![host isEqual:@"127.0.0.1"]) {
+    NSString *host = [GCDAsyncUdpSocket hostFromAddress:address];
+    UInt16 port = [GCDAsyncUdpSocket portFromAddress:address];
+
+	if(![host isEqual:@"localhost"] && ![host isEqual:MeshPipeLocalAddress]) {
 		MPDebug(@"Received unexpected message from host %@", host);
-		return NO;
+		return;
 	}
 	
 	if(port < _basePort || port >= _basePort + _count) {
 		MPDebug(@"Received unexpected message on port %d", port);
-		return NO;
+		return;
 	}
 	int i = port - _basePort;
 	
@@ -181,10 +202,10 @@ static NSDictionary *DeserializeInternal(NSData *data);
 		NSDictionary *internal = DeserializeInternal(payload);
 		if(!internal) {
 			MPDebug(@"Unable to deserialize %@", payload);
-			return NO;
+			return;
 		}
 		if(![self handleInternal:internal fromPeer:peer])
-			return NO;
+			return;
 	} else if(type == _MeshPipeMessageTypeData) {
 		MPDebug(@"Reveived from peer %@ message %@", peer, payload);
 		if([self.delegate respondsToSelector:@selector(meshPipe:receivedData:fromPeer:)]) {
@@ -195,11 +216,8 @@ static NSDictionary *DeserializeInternal(NSData *data);
 		}
 	} else {
 		MPDebug(@"Received unexpected message type from %@", peer);
-		return NO;
+		return;
 	}
-	
-	[sock receiveWithTimeout:-1 tag:0];
-	return YES;
 }
 
 - (BOOL)handleInternal:(NSDictionary*)internal fromPeer:(MeshPipePeer*)peer
@@ -277,7 +295,8 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	[send appendData:data];
 	
 	// Send through the listenSocket so that the sending port is correct
-	[self.parent.listenSocket sendData:send toHost:@"localhost" port:self.port withTimeout:-1 tag:0];
+    NSData *address = [MeshPipe _addressFor:MeshPipeLocalAddress port:self.port];
+    [self.parent.listenSocket sendData:send toAddress:address withTimeout:-1 tag:0];
 }
 
 - (void)sendData:(NSData*)data
