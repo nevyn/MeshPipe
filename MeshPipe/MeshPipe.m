@@ -11,7 +11,7 @@
 #import "NSData+GZIP.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
-static NSString *MeshPipeLocalAddress = @"127.0.0.1";
+static NSString *MeshPipeLocalHost = @"localhost";
 
 #ifdef DEBUG
     #define MPLogDebug(...) NSLog(__VA_ARGS__)
@@ -58,16 +58,6 @@ static NSDictionary *DeserializeInternal(NSData *data);
 ///// ------ IMPL --------
 
 @implementation MeshPipe
-+ (NSData *)_addressFor:(NSString *)host port:(UInt16)port
-{
-    struct sockaddr_in ip;
-    ip.sin_family = AF_INET;
-    ip.sin_port = htons(port);
-    inet_pton(AF_INET, [host cStringUsingEncoding:NSUTF8StringEncoding], &ip.sin_addr);
-    
-    NSData *discoveryHost = [NSData dataWithBytes:&ip length:sizeof(ip)];
-    return discoveryHost;
-}
 
 - (instancetype)initWithBasePort:(int)basePort count:(int)count peerName:(NSString*)peerName delegate:(id<MeshPipeDelegate>)delegate
 {
@@ -86,8 +76,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
                                                   delegateQueue:dispatch_get_main_queue()];
 	for(int i = 0; i < count; i++) {
 		int port = _basePort + i;
-        NSData *address = [MeshPipe _addressFor:MeshPipeLocalAddress port:port];
-		BOOL success = [_listenSocket bindToAddress:address error:NULL];
+		BOOL success = [_listenSocket bindToPort:port error:NULL];
 		if(success) {
 			_myPort = port;
 			break;
@@ -112,8 +101,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 		[_potentialPeers addObject:potentialPeer];
 		
 		NSError *err;
-        NSData *address = [MeshPipe _addressFor:MeshPipeLocalAddress port:potentialPeer.port];
-		if(![potentialPeer.socket connectToAddress:address error:&err]) {
+        if(![potentialPeer.socket connectToHost:MeshPipeLocalHost onPort:potentialPeer.port error:&err]) {
 			MPLogError(@"Unexectedly couldn't connect to MeshPipe potential peer %d, giving up: %@", i, err);
 			return nil;
 		}
@@ -177,6 +165,20 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	}];
 }
 
++ (NSArray <NSString *> *)_localHosts
+{
+    static NSArray <NSString *> *sLocalHosts = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sLocalHosts = @[
+                        MeshPipeLocalHost,
+                        @"127.0.0.1",   // IPv4 loopback
+                        @"::1",         // IPv6 loopback
+                        ];
+    });
+    return sLocalHosts;
+}
+
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock
    didReceiveData:(NSData *)data
       fromAddress:(NSData *)address
@@ -185,7 +187,7 @@ withFilterContext:(id)filterContext
     NSString *host = [GCDAsyncUdpSocket hostFromAddress:address];
     UInt16 port = [GCDAsyncUdpSocket portFromAddress:address];
 
-	if(![host isEqual:@"localhost"] && ![host isEqual:MeshPipeLocalAddress]) {
+	if(![[MeshPipe _localHosts] containsObject:host]) {
 		MPLogDebug(@"Received unexpected message from host %@", host);
 		return;
 	}
@@ -297,8 +299,7 @@ withFilterContext:(id)filterContext
 	[send appendData:data];
 	
 	// Send through the listenSocket so that the sending port is correct
-    NSData *address = [MeshPipe _addressFor:MeshPipeLocalAddress port:self.port];
-    [self.parent.listenSocket sendData:send toAddress:address withTimeout:-1 tag:0];
+    [self.parent.listenSocket sendData:send toHost:MeshPipeLocalHost port:self.port withTimeout:-1 tag:0];
 }
 
 - (void)sendData:(NSData*)data
