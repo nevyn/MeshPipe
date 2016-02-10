@@ -1,0 +1,6 @@
+[submodule "Libraries/CocoaAsyncSocket"]
+	path = Libraries/CocoaAsyncSocket
+	url = https://github.com/robbiehanson/CocoaAsyncSocket.git
+[submodule "Libraries/GZIP"]
+	path = Libraries/GZIP
+	url = https://github.com/nicklockwood/GZIP.git

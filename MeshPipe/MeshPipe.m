@@ -7,25 +7,32 @@
 //
 
 #import "MeshPipe.h"
-#import "AsyncUdpSocket.h"
-#import "GZIP.h"
+#import "GCDAsyncUdpSocket.h"
+#import "NSData+GZIP.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+static NSString *MeshPipeLocalHost = @"localhost";
 
-//#define MPDebug(...) NSLog(__VA_ARGS__)
-#define MPDebug(...)
+#ifdef DEBUG
+    #define MPLogDebug(...) NSLog(__VA_ARGS__)
+#else
+    #define MPLogDebug(...)
+#endif
+#define MPLogError(...) NSLog(__VA_ARGS__)
 
 typedef NS_ENUM(uint8_t, _MeshPipeMessageType) {
 	_MeshPipeMessageTypeInternal = 1,
 	_MeshPipeMessageTypeData = 2,
 };
 
-@interface MeshPipe () <AsyncUdpSocketDelegate>
+@interface MeshPipe () <GCDAsyncUdpSocketDelegate>
 {
 	NSMutableSet<MeshPipePeer*> *_peers;
 	NSMutableArray<MeshPipePeer*> *_potentialPeers;
 	int _myPort;
 	NSTimer *_keepaliveTimer;
 }
-@property(nonatomic,readonly) AsyncUdpSocket *listenSocket;
+@property(nonatomic,readonly) GCDAsyncUdpSocket *listenSocket;
 @end
 
 @interface MeshPipePeer ()
@@ -33,7 +40,7 @@ typedef NS_ENUM(uint8_t, _MeshPipeMessageType) {
 }
 @property(nonatomic) int port;
 @property(nonatomic,readwrite) NSString *name;
-@property(nonatomic) AsyncUdpSocket *socket;
+@property(nonatomic) GCDAsyncUdpSocket *socket;
 @property(nonatomic) NSTimer *expectKeepaliveTimer;
 @property(nonatomic,weak) MeshPipe *parent;
 - (void)sendInternal:(NSDictionary*)internal;
@@ -51,6 +58,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 ///// ------ IMPL --------
 
 @implementation MeshPipe
+
 - (instancetype)initWithBasePort:(int)basePort count:(int)count peerName:(NSString*)peerName delegate:(id<MeshPipeDelegate>)delegate
 {
 	if(!(self = [super init]))
@@ -64,36 +72,37 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	_potentialPeers = [NSMutableArray new];
 	_peers = [NSMutableSet new];
 	
-	_listenSocket = [[AsyncUdpSocket alloc] initWithDelegate:self];
-
+	_listenSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
+                                                  delegateQueue:dispatch_get_main_queue()];
 	for(int i = 0; i < count; i++) {
 		int port = _basePort + i;
-		BOOL success = [_listenSocket bindToAddress:@"localhost" port:port error:NULL];
+		BOOL success = [_listenSocket bindToPort:port error:NULL];
 		if(success) {
 			_myPort = port;
 			break;
 		}
 	}
 	if(!_myPort) {
-		NSLog(@"No free MeshPipe slots, not creating pipe");
+		MPLogError(@"No free MeshPipe slots, not creating pipe");
 		return nil;
 	}
 	
-	MPDebug(@"MeshPipe listening on %d", _myPort);
+	MPLogDebug(@"MeshPipe listening on %d", _myPort);
 	
-	[_listenSocket receiveWithTimeout:-1 tag:0];
-	
+    [_listenSocket beginReceiving:NULL];
+    
 	for(int i = 0; i < count; i++) {
 		int port = _basePort + i;
 		MeshPipePeer *potentialPeer = (port == _myPort) ? [MeshPipeSelfPeer new] : [MeshPipePeer new];
 		potentialPeer.parent = self;
-		potentialPeer.socket = [[AsyncUdpSocket alloc] initWithDelegate:self];
+		potentialPeer.socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
+                                                             delegateQueue:dispatch_get_main_queue()];
 		potentialPeer.port = port;
 		[_potentialPeers addObject:potentialPeer];
 		
 		NSError *err;
-		if(![potentialPeer.socket connectToHost:@"localhost" onPort:potentialPeer.port error:&err]) {
-			NSLog(@"Unexectedly couldn't connect to MeshPipe potential peer %d, giving up: %@", i, err);
+        if(![potentialPeer.socket connectToHost:MeshPipeLocalHost onPort:potentialPeer.port error:&err]) {
+			MPLogError(@"Unexectedly couldn't connect to MeshPipe potential peer %d, giving up: %@", i, err);
 			return nil;
 		}
 		[self announceTo:potentialPeer];
@@ -114,7 +123,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 
 - (void)disconnect
 {
-	MPDebug(@"Disconnecting from %@", _peers);
+	MPLogDebug(@"Disconnecting from %@", _peers);
 	for(MeshPipePeer *peer in _peers)
 		[peer sendInternal:@{
 			@"cmd": @"disconnected",
@@ -128,7 +137,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	if(_peers.count == 0)
 		return;
 	
-	MPDebug(@"Sending keepalive to %@", _peers);
+	MPLogDebug(@"Sending keepalive to %@", _peers);
 	for(MeshPipePeer *peer in _peers) {
 		[peer sendInternal:@{
 			@"cmd": @"keepalive",
@@ -138,7 +147,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 - (void)keepaliveExpected:(NSTimer*)timer
 {
 	MeshPipePeer *peer = timer.userInfo;
-	MPDebug(@"%@ timed out", peer);
+	MPLogDebug(@"%@ timed out", peer);
 	
 	[peer sendInternal:@{
 		@"cmd": @"youTimedOut"
@@ -156,20 +165,36 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	}];
 }
 
-- (BOOL)onUdpSocket:(AsyncUdpSocket *)sock
-     didReceiveData:(NSData *)data
-            withTag:(long)tag
-           fromHost:(NSString *)host
-               port:(UInt16)port
++ (NSArray <NSString *> *)_localHosts
 {
-	if(![host isEqual:@"localhost"] && ![host isEqual:@"127.0.0.1"]) {
-		MPDebug(@"Received unexpected message from host %@", host);
-		return NO;
+    static NSArray <NSString *> *sLocalHosts = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sLocalHosts = @[
+                        MeshPipeLocalHost,
+                        @"127.0.0.1",   // IPv4 loopback
+                        @"::1",         // IPv6 loopback
+                        ];
+    });
+    return sLocalHosts;
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock
+   didReceiveData:(NSData *)data
+      fromAddress:(NSData *)address
+withFilterContext:(id)filterContext
+{
+    NSString *host = [GCDAsyncUdpSocket hostFromAddress:address];
+    UInt16 port = [GCDAsyncUdpSocket portFromAddress:address];
+
+	if(![[MeshPipe _localHosts] containsObject:host]) {
+		MPLogDebug(@"Received unexpected message from host %@", host);
+		return;
 	}
 	
 	if(port < _basePort || port >= _basePort + _count) {
-		MPDebug(@"Received unexpected message on port %d", port);
-		return NO;
+		MPLogDebug(@"Received unexpected message on port %d", port);
+		return;
 	}
 	int i = port - _basePort;
 	
@@ -180,13 +205,13 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	if(type == _MeshPipeMessageTypeInternal) {
 		NSDictionary *internal = DeserializeInternal(payload);
 		if(!internal) {
-			MPDebug(@"Unable to deserialize %@", payload);
-			return NO;
+			MPLogDebug(@"Unable to deserialize %@", payload);
+			return;
 		}
 		if(![self handleInternal:internal fromPeer:peer])
-			return NO;
+			return;
 	} else if(type == _MeshPipeMessageTypeData) {
-		MPDebug(@"Reveived from peer %@ message %@", peer, payload);
+		MPLogDebug(@"Reveived from peer %@ message %@", peer, payload);
 		if([self.delegate respondsToSelector:@selector(meshPipe:receivedData:fromPeer:)]) {
 			[self.delegate meshPipe:self receivedData:payload fromPeer:peer];
 		}
@@ -194,17 +219,14 @@ static NSDictionary *DeserializeInternal(NSData *data);
 			[peer.delegate meshPipePeer:peer receivedData:payload];
 		}
 	} else {
-		MPDebug(@"Received unexpected message type from %@", peer);
-		return NO;
+		MPLogDebug(@"Received unexpected message type from %@", peer);
+		return;
 	}
-	
-	[sock receiveWithTimeout:-1 tag:0];
-	return YES;
 }
 
 - (BOOL)handleInternal:(NSDictionary*)internal fromPeer:(MeshPipePeer*)peer
 {
-	MPDebug(@"Handling peer %@ internal %@", peer, internal);
+	MPLogDebug(@"Handling peer %@ internal %@", peer, internal);
 	
 	NSString *cmd = internal[@"cmd"];
 	if(!cmd) return NO;
@@ -226,7 +248,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 		[peer.expectKeepaliveTimer invalidate];
 		peer.expectKeepaliveTimer = [NSTimer scheduledTimerWithTimeInterval:kKeepaliveExpectedWithin target:self selector:@selector(keepaliveExpected:) userInfo:peer repeats:YES];
 	} else {
-		MPDebug(@"Unexpected internal command %@", internal);
+		MPLogDebug(@"Unexpected internal command %@", internal);
 		return NO;
 	}
 	return YES;
@@ -235,7 +257,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 - (void)markPeerAsAvailable:(MeshPipePeer*)peer
 {
 	if(![_peers containsObject:peer]) {
-		MPDebug(@"Peer is now available: %@", peer);
+		MPLogDebug(@"Peer is now available: %@", peer);
 		peer.expectKeepaliveTimer = [NSTimer scheduledTimerWithTimeInterval:kKeepaliveExpectedWithin target:self selector:@selector(keepaliveExpected:) userInfo:peer repeats:YES];
 		[self willChangeValueForKey:@"peers"];
 		[_peers addObject:peer];
@@ -248,7 +270,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 - (void)markPeerAsUnavailable:(MeshPipePeer*)peer forReason:(NSError*)error
 {
 	if([_peers containsObject:peer]) {
-		MPDebug(@"Peer is now unavailable: %@: reason %@", peer, error);
+		MPLogDebug(@"Peer is now unavailable: %@: reason %@", peer, error);
 		[peer.expectKeepaliveTimer invalidate]; peer.expectKeepaliveTimer = nil;
 		[self willChangeValueForKey:@"peers"];
 		[_peers removeObject:peer];
@@ -277,7 +299,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 	[send appendData:data];
 	
 	// Send through the listenSocket so that the sending port is correct
-	[self.parent.listenSocket sendData:send toHost:@"localhost" port:self.port withTimeout:-1 tag:0];
+    [self.parent.listenSocket sendData:send toHost:MeshPipeLocalHost port:self.port withTimeout:-1 tag:0];
 }
 
 - (void)sendData:(NSData*)data
@@ -286,7 +308,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 }
 - (void)sendInternal:(NSDictionary *)internal
 {
-	MPDebug(@"%@ sending internal: %@", self, internal);
+	MPLogDebug(@"%@ sending internal: %@", self, internal);
 	[self _send:SerializeInternal(internal) asType:_MeshPipeMessageTypeInternal];
 }
 - (NSString*)description
@@ -298,7 +320,7 @@ static NSDictionary *DeserializeInternal(NSData *data);
 @implementation MeshPipeSelfPeer
 - (void)_send:(NSData*)data asType:(_MeshPipeMessageType)type
 {
-	MPDebug(@"Not sending to self");
+	MPLogDebug(@"Not sending to self");
 }
 
 @end
@@ -320,7 +342,7 @@ static NSDictionary *DeserializeInternal(NSData *data)
 	NSError *err;
 	id ret = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
 	if(!ret) {
-		MPDebug(@"Unable to deserialize: %@ %@", data, err);
+		MPLogDebug(@"Unable to deserialize: %@ %@", data, err);
 		return nil;
 	}
 	return ret;

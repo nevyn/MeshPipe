@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		05B10C9F1B83B51C00249C11 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10C9E1B83B51C00249C11 /* main.m */; };
-		05B10CA71B83B53100249C11 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */; };
 		05B10CAA1B83B54700249C11 /* MeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA91B83B54700249C11 /* MeshPipe.m */; };
-		05B10CAD1B84909000249C11 /* GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CAC1B84909000249C11 /* GZIP.m */; };
 		05B92C8C1B8E332700226846 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C8B1B8E332700226846 /* main.m */; };
 		05B92C921B8E338A00226846 /* CerfingMeshPipeTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C911B8E338A00226846 /* CerfingMeshPipeTransport.m */; };
 		05B92CA51B8E33DF00226846 /* CerfingConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92C951B8E33DF00226846 /* CerfingConnection.m */; };
@@ -18,8 +16,10 @@
 		05B92CAB1B8E33DF00226846 /* CerfingTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92CA41B8E33DF00226846 /* CerfingTransport.m */; };
 		05B92CAE1B8E393400226846 /* CerfingMeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B92CAD1B8E393400226846 /* CerfingMeshPipe.m */; };
 		05B92CAF1B8E561600226846 /* MeshPipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA91B83B54700249C11 /* MeshPipe.m */; };
-		05B92CB01B8E561600226846 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */; };
-		05B92CB11B8E561600226846 /* GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B10CAC1B84909000249C11 /* GZIP.m */; };
+		DF948E791C68D4B7002C3806 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = DF948E781C68D4B7002C3806 /* GCDAsyncUdpSocket.m */; };
+		DF948E7A1C68D4B7002C3806 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = DF948E781C68D4B7002C3806 /* GCDAsyncUdpSocket.m */; };
+		DF948E7E1C68D4CB002C3806 /* NSData+GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = DF948E7D1C68D4CB002C3806 /* NSData+GZIP.m */; };
+		DF948E7F1C68D4CB002C3806 /* NSData+GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = DF948E7D1C68D4CB002C3806 /* NSData+GZIP.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,12 +46,8 @@
 /* Begin PBXFileReference section */
 		05B10C9B1B83B51C00249C11 /* MeshPipe */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MeshPipe; sourceTree = BUILT_PRODUCTS_DIR; };
 		05B10C9E1B83B51C00249C11 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		05B10CA51B83B53100249C11 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncUdpSocket.h; sourceTree = "<group>"; };
-		05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncUdpSocket.m; sourceTree = "<group>"; };
 		05B10CA81B83B54700249C11 /* MeshPipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshPipe.h; sourceTree = "<group>"; };
 		05B10CA91B83B54700249C11 /* MeshPipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeshPipe.m; sourceTree = "<group>"; };
-		05B10CAB1B84909000249C11 /* GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GZIP.h; sourceTree = "<group>"; };
-		05B10CAC1B84909000249C11 /* GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GZIP.m; sourceTree = "<group>"; };
 		05B10CAE1B84992900249C11 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		05B92C891B8E332700226846 /* CerfingMeshPipeTransport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CerfingMeshPipeTransport; sourceTree = BUILT_PRODUCTS_DIR; };
 		05B92C8B1B8E332700226846 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -65,6 +61,10 @@
 		05B92CA41B8E33DF00226846 /* CerfingTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingTransport.m; sourceTree = "<group>"; };
 		05B92CAC1B8E393400226846 /* CerfingMeshPipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CerfingMeshPipe.h; sourceTree = "<group>"; };
 		05B92CAD1B8E393400226846 /* CerfingMeshPipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CerfingMeshPipe.m; sourceTree = "<group>"; };
+		DF948E771C68D4B7002C3806 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = Libraries/CocoaAsyncSocket/Source/GCD/GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		DF948E781C68D4B7002C3806 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = Libraries/CocoaAsyncSocket/Source/GCD/GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		DF948E7C1C68D4CB002C3806 /* NSData+GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+GZIP.h"; path = "Libraries/GZIP/GZIP/NSData+GZIP.h"; sourceTree = "<group>"; };
+		DF948E7D1C68D4CB002C3806 /* NSData+GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+GZIP.m"; path = "Libraries/GZIP/GZIP/NSData+GZIP.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +88,7 @@
 		05B10C921B83B51C00249C11 = {
 			isa = PBXGroup;
 			children = (
+				DF948E491C68D2F9002C3806 /* Libraries */,
 				05B10C9D1B83B51C00249C11 /* MeshPipe */,
 				05B92C8A1B8E332700226846 /* CerfingMeshPipeTransport */,
 				05B10C9C1B83B51C00249C11 /* Products */,
@@ -109,10 +110,6 @@
 				05B10C9E1B83B51C00249C11 /* main.m */,
 				05B10CA81B83B54700249C11 /* MeshPipe.h */,
 				05B10CA91B83B54700249C11 /* MeshPipe.m */,
-				05B10CA51B83B53100249C11 /* AsyncUdpSocket.h */,
-				05B10CA61B83B53100249C11 /* AsyncUdpSocket.m */,
-				05B10CAB1B84909000249C11 /* GZIP.h */,
-				05B10CAC1B84909000249C11 /* GZIP.m */,
 				05B10CAE1B84992900249C11 /* README.md */,
 			);
 			path = MeshPipe;
@@ -152,6 +149,33 @@
 				05B92CA41B8E33DF00226846 /* CerfingTransport.m */,
 			);
 			path = Transports;
+			sourceTree = "<group>";
+		};
+		DF948E491C68D2F9002C3806 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				DF948E761C68D4A6002C3806 /* CocoaAsyncSocket */,
+				DF948E751C68D4A2002C3806 /* GZIP */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		DF948E751C68D4A2002C3806 /* GZIP */ = {
+			isa = PBXGroup;
+			children = (
+				DF948E7C1C68D4CB002C3806 /* NSData+GZIP.h */,
+				DF948E7D1C68D4CB002C3806 /* NSData+GZIP.m */,
+			);
+			name = GZIP;
+			sourceTree = "<group>";
+		};
+		DF948E761C68D4A6002C3806 /* CocoaAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				DF948E771C68D4B7002C3806 /* GCDAsyncUdpSocket.h */,
+				DF948E781C68D4B7002C3806 /* GCDAsyncUdpSocket.m */,
+			);
+			name = CocoaAsyncSocket;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,10 +255,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF948E7E1C68D4CB002C3806 /* NSData+GZIP.m in Sources */,
 				05B10C9F1B83B51C00249C11 /* main.m in Sources */,
+				DF948E791C68D4B7002C3806 /* GCDAsyncUdpSocket.m in Sources */,
 				05B10CAA1B83B54700249C11 /* MeshPipe.m in Sources */,
-				05B10CA71B83B53100249C11 /* AsyncUdpSocket.m in Sources */,
-				05B10CAD1B84909000249C11 /* GZIP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,13 +267,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				05B92CAB1B8E33DF00226846 /* CerfingTransport.m in Sources */,
-				05B92CB11B8E561600226846 /* GZIP.m in Sources */,
 				05B92CAE1B8E393400226846 /* CerfingMeshPipe.m in Sources */,
 				05B92C8C1B8E332700226846 /* main.m in Sources */,
-				05B92CB01B8E561600226846 /* AsyncUdpSocket.m in Sources */,
 				05B92CAF1B8E561600226846 /* MeshPipe.m in Sources */,
+				DF948E7A1C68D4B7002C3806 /* GCDAsyncUdpSocket.m in Sources */,
 				05B92CA51B8E33DF00226846 /* CerfingConnection.m in Sources */,
 				05B92CA61B8E33DF00226846 /* CerfingSerializer.m in Sources */,
+				DF948E7F1C68D4CB002C3806 /* NSData+GZIP.m in Sources */,
 				05B92C921B8E338A00226846 /* CerfingMeshPipeTransport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
