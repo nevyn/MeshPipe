@@ -38,8 +38,8 @@ Pod::Spec.new do |s|
     core.exclude_files = "MeshPipe/main.m"
     core.public_header_files = "MeshPipe/MeshPipe.h"
     core.header_mappings_dir = 'Cerfing'
-    core.dependency "AsyncSocket"
-    core.dependency "GZIP"
+    core.dependency "CocoaAsyncSocket", '~> 7.4'
+    core.dependency "GZIP", '~> 1.1'
   end
 
   s.subspec "CerfingMeshPipe" do |cerf|
