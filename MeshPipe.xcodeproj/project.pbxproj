@@ -361,6 +361,7 @@
 		05B10CA31B83B51C00249C11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = Libraries/GZIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -368,6 +369,7 @@
 		05B10CA41B83B51C00249C11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = Libraries/GZIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

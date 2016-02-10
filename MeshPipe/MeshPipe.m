@@ -8,7 +8,7 @@
 
 #import "MeshPipe.h"
 #import "GCDAsyncUdpSocket.h"
-#import "NSData+GZIP.h"
+#import <GZIP/GZIP.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 static NSString *MeshPipeLocalHost = @"localhost";
